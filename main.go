@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/smtp"
+	"os"
 )
 
 type mail struct {
@@ -21,33 +22,22 @@ func createEmail(email *gin.Context) {
 		return
 	}
 
-	sendMailSimple(&newEmail)
+	sendMailSimple(newEmail)
 
 	email.IndentedJSON(http.StatusCreated, newEmail)
 }
 
-func sendMailSimple(email *mail) {
+func sendMailSimple(email mail) {
 	fmt.Println(email)
 	auth := smtp.PlainAuth(
 		"",
-		"fast.transanto@gmail.com",
+		email.EMAIL,
 		"vrnugowggzvkkqye",
 		"smtp.gmail.com",
 	)
 
-	// Compose the email message
-	headers := make(map[string]string)
-	headers["From"] = email.EMAIL
-	headers["To"] = "fast.transanto@gmail.com"
-	headers["Subject"] = email.SUBJECT
+	msg := email.MESSAGE
 
-	msg := ""
-	for k, v := range headers {
-		msg += fmt.Sprintf("%s: %s\r\n", k, v)
-	}
-	msg += "\r\n" + email.MESSAGE
-
-	// Send the email
 	err := smtp.SendMail(
 		"smtp.gmail.com:587",
 		auth,
@@ -64,5 +54,5 @@ func sendMailSimple(email *mail) {
 func main() {
 	router := gin.Default()
 	router.POST("/sendMail", createEmail)
-	router.Run("localhost:8080")
+	router.Run(os.Getenv("APP_URL"))
 }

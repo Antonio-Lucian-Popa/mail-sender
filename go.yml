@@ -1,0 +1,23 @@
+name: Deploy to Netlify
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build and deploy
+        uses: nwtgck/actions-netlify@v2.1.2
+        with:
+          publish-directory: ./
+          production-branch: main
+          deploy-message: "Deploy from GitHub Actions"
+          github-token: "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"
+          netlify-site-name: "majestic-creponne-073d33"
