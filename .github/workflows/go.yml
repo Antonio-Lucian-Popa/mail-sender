@@ -13,11 +13,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Install Netlify CLI
+        run: npm install -g netlify-cli
+
       - name: Build and deploy
-        uses: nwtgck/actions-netlify@v2.1.2
-        with:
-          publish-directory: ./
-          production-branch: main
-          deploy-message: "Deploy from GitHub Actions"
-          github-token: "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"
-          netlify-site-name: "majestic-creponne-073d33"
+        run: netlify deploy --prod --dir=./ --message="Deploy from GitHub Actions" --site="majestic-creponne-073d33" --auth="95pNkYjyk9rg4-B44-Jeti23lAALDGUaYfsuXNUhHUg"
+        env:
+          NETLIFY_AUTH_TOKEN: "95pNkYjyk9rg4-B44-Jeti23lAALDGUaYfsuXNUhHUg"
