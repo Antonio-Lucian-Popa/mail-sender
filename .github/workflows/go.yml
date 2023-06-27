@@ -17,6 +17,4 @@ jobs:
         run: npm install -g netlify-cli
 
       - name: Build and deploy
-        run: netlify deploy --prod --dir=./ --message="Deploy from GitHub Actions" --site="go-mail-sender" --auth="95pNkYjyk9rg4-B44-Jeti23lAALDGUaYfsuXNUhHUg"
-        env:
-          NETLIFY_AUTH_TOKEN: "95pNkYjyk9rg4-B44-Jeti23lAALDGUaYfsuXNUhHUg"
+        run: curl -X POST -d {} ${{ secrets.NETLIFY_BUILD_HOOK }}
