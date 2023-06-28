@@ -22,7 +22,9 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
       - name: Link directory to Netlify site
-        run: netlify link -n go-mail-sender
+        run: netlify init --site go-mail-sender
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
       - name: Build and deploy
         run: |
