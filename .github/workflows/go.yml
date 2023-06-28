@@ -17,7 +17,9 @@ jobs:
         run: npm install -g netlify-cli
 
       - name: Authenticate with Netlify
-        run: netlify login -t ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        run: netlify login
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
       - name: Link directory to Netlify site
         run: netlify link -n go-mail-sender
