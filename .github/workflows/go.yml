@@ -16,9 +16,14 @@ jobs:
       - name: Install Netlify CLI
         run: npm install -g netlify-cli
 
+      - name: Authenticate with Netlify
+        run: netlify login -t ${{ secrets.NETLIFY_AUTH_TOKEN }}
+
+      - name: Link directory to Netlify site
+        run: netlify link -n go-mail-sender
+
       - name: Build and deploy
         run: |
           go build -o app
-          npx netlify deploy --prod --dir=. --functions=app
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          netlify deploy -p --dir=./app
+
