@@ -28,7 +28,7 @@ jobs:
 
       - name: Build and deploy
         run: |
-          go build -o app
+          go build -o ./app
           netlify deploy -p --dir=./app
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
