@@ -26,10 +26,10 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
 
-      - name: Build and deploy
-        run: |
-          go build -o ./app
-          netlify deploy -p --dir=./app
+      - name: Build
+        run: go build -o ./app
+
+      - name: Deploy
+        run: netlify deploy --prod --dir=./
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-
