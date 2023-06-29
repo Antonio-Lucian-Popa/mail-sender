@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
 	"net/smtp"
 	"os"
+
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/gin-gonic/gin"
 )
 
 type mail struct {
@@ -15,16 +18,9 @@ type mail struct {
 	MESSAGE string `json:"message"`
 }
 
-func createEmail(email *gin.Context) {
-	var newEmail mail
-
-	if err := email.BindJSON(&newEmail); err != nil {
-		return
-	}
-
-	sendMailSimple(newEmail)
-
-	email.IndentedJSON(http.StatusCreated, newEmail)
+func createEmail(event mail) error {
+	sendMailSimple(event)
+	return nil
 }
 
 func sendMailSimple(email mail) {
@@ -47,12 +43,30 @@ func sendMailSimple(email mail) {
 	)
 
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 }
 
 func main() {
-	router := gin.Default()
-	router.POST("/sendMail", createEmail)
-	router.Run(os.Getenv("APP_URL"))
+	if os.Getenv("NETLIFY_LAMBDA") == "true" {
+		lambda.Start(createEmail)
+	} else {
+		router := gin.Default()
+		router.POST("/.netlify/functions/sendMail", func(c *gin.Context) {
+			var newEmail mail
+
+			if err := c.BindJSON(&newEmail); err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})
+				return
+			}
+
+			if err := createEmail(newEmail); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to send email"})
+				return
+			}
+
+			c.JSON(http.StatusCreated, newEmail)
+		})
+		router.Run(":8888")
+	}
 }
