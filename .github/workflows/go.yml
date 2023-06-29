@@ -31,7 +31,7 @@ jobs:
 
       - name: Deploy
         run: |
-          netlify deploy --prod --dir=./
+          netlify deploy --dir=./
           netlify functions:deploy --prod
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
